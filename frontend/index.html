@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>StudyFinder</title>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header class="topbar">
+        <a href="#" class="brand">
+            <span class="brand-mark">SF</span>
+            <span>StudyFinder</span>
+        </a>
+
+        <div id="user-navigation" class="user-navigation hidden">
+            <span id="welcome-user"></span>
+            <button id="logout-button" class="text-button" type="button">
+                Log out
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Authentication -->
+        <section id="authentication-view" class="authentication-view">
+            <div class="authentication-panel">
+                <header class="form-header">
+                    <h1 id="authentication-title">Sign in</h1>
+                    <p>Access your study groups and find classmates.</p>
+                </header>
+
+                <form id="login-form">
+                    <label for="login-email">Email address</label>
+                    <input
+                        id="login-email"
+                        type="email"
+                        autocomplete="email"
+                        required
+                    >
+
+                    <label for="login-password">Password</label>
+                    <input
+                        id="login-password"
+                        type="password"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                    <button class="main-button" type="submit">
+                        Sign in
+                    </button>
+
+                    <p id="login-message" class="form-message"></p>
+                </form>
+
+                <form id="register-form" class="hidden">
+                    <label for="register-name">Full name</label>
+                    <input
+                        id="register-name"
+                        type="text"
+                        autocomplete="name"
+                        required
+                    >
+
+                    <label for="register-email">Email address</label>
+                    <input
+                        id="register-email"
+                        type="email"
+                        autocomplete="email"
+                        required
+                    >
+
+                    <label for="register-password">Password</label>
+                    <input
+                        id="register-password"
+                        type="password"
+                        autocomplete="new-password"
+                        minlength="6"
+                        required
+                    >
+
+                    <button class="main-button" type="submit">
+                        Create account
+                    </button>
+
+                    <p id="register-message" class="form-message"></p>
+                </form>
+
+                <div class="authentication-switch">
+                    <span id="switch-text">New to StudyFinder?</span>
+
+                    <button id="authentication-switch-button" type="button">
+                        Create an account
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Application -->
+        <section id="application-view" class="application-view hidden">
+            <aside class="sidebar">
+                <p class="sidebar-label">Workspace</p>
+
+                <nav>
+                    <button class="navigation-item active" type="button">
+                        Find groups
+                    </button>
+
+                    <button
+                        id="sidebar-create-button"
+                        class="navigation-item"
+                        type="button"
+                    >
+                        Create a group
+                    </button>
+                </nav>
+            </aside>
+
+            <div class="workspace">
+                <header class="page-header">
+                    <div>
+                        <p class="section-label">Study groups</p>
+                        <h1>Find classmates by course</h1>
+                    </div>
+
+                    <button id="open-create-group" class="main-button" type="button">
+                        New group
+                    </button>
+                </header>
+
+                <form id="search-form" class="search-bar">
+                    <label for="search-input" class="visually-hidden">
+                        Course name or course code
+                    </label>
+
+                    <input
+                        id="search-input"
+                        type="search"
+                        placeholder="Search by course name or code"
+                        required
+                    >
+
+                    <button type="submit">Search</button>
+                </form>
+
+                <p id="search-message" class="form-message"></p>
+
+                <div class="results-heading">
+                    <span>Available groups</span>
+                    <span id="result-count">0 groups</span>
+                </div>
+
+                <div id="group-results" class="group-results">
+                    <div class="empty-state">
+                        <p>Search for a course to see available study groups.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Create group window -->
+    <dialog id="create-group-dialog">
+        <div class="dialog-header">
+            <div>
+                <p class="section-label">StudyFinder</p>
+                <h2>Create a study group</h2>
+            </div>
+
+            <button
+                id="close-create-group"
+                class="close-button"
+                type="button"
+                aria-label="Close"
+            >
+                ×
+            </button>
+        </div>
+
+        <form id="create-group-form">
+            <label for="group-name">Group name</label>
+            <input id="group-name" type="text" required>
+
+            <label for="course-code">Course code</label>
+            <input
+                id="course-code"
+                type="text"
+                placeholder="ITSC 3155"
+                required
+            >
+
+            <label for="group-description">Description</label>
+            <textarea
+                id="group-description"
+                rows="5"
+                required
+            ></textarea>
+
+            <button class="main-button" type="submit">
+                Create group
+            </button>
+
+            <p id="create-group-message" class="form-message"></p>
+        </form>
+    </dialog>
+
+    <!-- Group details window -->
+    <dialog id="group-dialog">
+        <button
+            id="close-group-dialog"
+            class="close-button"
+            type="button"
+            aria-label="Close"
+        >
+            ×
+        </button>
+
+        <div id="group-details"></div>
+    </dialog>
+
+    <div id="notification" class="notification hidden"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>

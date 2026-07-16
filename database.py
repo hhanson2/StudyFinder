@@ -6,11 +6,13 @@ from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 
 class Settings(BaseSettings):
-    db_host: str
+    database_url: str | None = None
+
+    db_host: str | None = None
     db_port: int = 3306
-    db_user: str
-    db_password: str
-    db_name: str
+    db_user: str | None = None
+    db_password: str | None = None
+    db_name: str | None = None
 
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -20,19 +22,40 @@ class Settings(BaseSettings):
 
 settings = Settings()
 
-database_url = URL.create(
-    drivername="mysql+pymysql",
-    username=settings.db_user,
-    password=settings.db_password,
-    host=settings.db_host,
-    port=settings.db_port,
-    database=settings.db_name,
-)
+
+if settings.database_url:
+    database_url = settings.database_url
+
+    if database_url.startswith("postgresql://"):
+        database_url = database_url.replace(
+            "postgresql://",
+            "postgresql+psycopg://",
+            1
+        )
+
+    elif database_url.startswith("postgres://"):
+        database_url = database_url.replace(
+            "postgres://",
+            "postgresql+psycopg://",
+            1
+        )
+
+else:
+    database_url = URL.create(
+        drivername="mysql+pymysql",
+        username=settings.db_user,
+        password=settings.db_password,
+        host=settings.db_host,
+        port=settings.db_port,
+        database=settings.db_name,
+    )
+
 
 engine = create_engine(
     database_url,
     pool_pre_ping=True,
 )
+
 
 SessionLocal = sessionmaker(
     bind=engine,

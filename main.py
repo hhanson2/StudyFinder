@@ -2,7 +2,7 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-
+from database import Base, engine
 from routers import auth
 from routers import dashboard
 from routers import discussion_posts
@@ -13,7 +13,7 @@ from routers import users
 
 
 app = FastAPI(title="StudyFinder API")
-
+Base.metadata.create_all(bind=engine)
 
 app.include_router(
     users.router,

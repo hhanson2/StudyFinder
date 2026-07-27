@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudyFinder</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ===================== AUTH VIEW ===================== -->
+<section id="authentication-view" class="authentication-view">
+  <div class="auth-left">
+    <div class="auth-left-inner">
+      <h1 class="auth-logo">StudyFinder</h1>
+      <h2 class="auth-tagline">Find your people.<br>Study smarter.</h2>
+      <p class="auth-subtext">Create course-based groups, schedule sessions, and keep every discussion in one place.</p>
+    </div>
+  </div>
+
+  <div class="auth-right">
+    <div class="authentication-panel">
+      <header class="form-header" id="authentication-header">
+        <h1 id="authentication-title">Welcome back</h1>
+        <p id="authentication-subtitle">Sign in to continue to StudyFinder</p>
+      </header>
+
+      <form id="login-form">
+        <label for="login-email">Email address</label>
+        <input id="login-email" type="email" autocomplete="email" placeholder="you@uncc.edu" required>
+
+        <label for="login-password">Password</label>
+        <input id="login-password" type="password" autocomplete="current-password" required>
+
+        <div class="auth-options">
+          <label class="checkbox-label"><input type="checkbox" id="remember-me"> Remember me</label>
+          <span class="link-text">Forgot password?</span>
+        </div>
+
+        <button class="main-button" type="submit">Sign in</button>
+        <p id="login-message" class="form-message"></p>
+      </form>
+
+      <form id="register-form" class="hidden">
+        <label for="register-name">Full name</label>
+        <input id="register-name" type="text" autocomplete="name" required>
+
+        <label for="register-email">Email address</label>
+        <input id="register-email" type="email" autocomplete="email" placeholder="you@uncc.edu" required>
+
+        <label for="register-major">Major</label>
+        <input id="register-major" type="text" placeholder="Computer Science">
+
+        <label for="register-password">Password</label>
+        <input id="register-password" type="password" autocomplete="new-password" minlength="6" required>
+
+        <button class="main-button" type="submit">Create account</button>
+        <p id="register-message" class="form-message"></p>
+      </form>
+
+      <div class="authentication-switch">
+        <span id="switch-text">New to StudyFinder?</span>
+        <button id="authentication-switch-button" class="secondary-button" type="button">Create an account</button>
+      </div>
+
+      <p class="auth-footer">Built for UNCC study groups</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== APPLICATION VIEW ===================== -->
+<div id="application-view" class="application-view hidden">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <span class="brand-mark">S</span>
+      <span class="brand-name">StudyFinder</span>
+    </div>
+
+    <nav>
+      <button class="nav-item active" data-view="dashboard" type="button">
+        <span class="nav-icon">🏠</span> Dashboard
+      </button>
+      <button class="nav-item" data-view="discover-groups" type="button">
+        <span class="nav-icon">🔍</span> Discover Groups
+      </button>
+      <button class="nav-item" data-view="my-groups" type="button">
+        <span class="nav-icon">👥</span> My Groups
+      </button>
+      <button class="nav-item" data-view="sessions" type="button">
+        <span class="nav-icon">🗓️</span> Sessions
+      </button>
+      <button class="nav-item" data-view="discussions" type="button">
+        <span class="nav-icon">💬</span> Discussions
+      </button>
+      <button class="nav-item" data-view="notifications" type="button">
+        <span class="nav-icon">🔔</span> Notifications
+        <span id="sidebar-unread-dot" class="unread-dot hidden"></span>
+      </button>
+      <button class="nav-item" data-view="profile" type="button">
+        <span class="nav-icon">🧑</span> Profile
+      </button>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <div class="topbar">
+      <div></div>
+      <div class="topbar-right">
+        <button id="bell-button" class="bell-button" type="button">
+          🔔
+          <span id="bell-unread-dot" class="unread-dot hidden"></span>
+        </button>
+        <div class="topbar-user" id="topbar-user-button">
+          <span class="avatar-circle avatar-small" id="topbar-avatar">S</span>
+          <div class="topbar-user-text">
+            <span id="topbar-user-name">—</span>
+            <span class="muted small">Student</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---------- DASHBOARD ---------- -->
+    <section id="view-dashboard" class="view">
+      <h1>Dashboard</h1>
+      <p class="page-subtitle">Your study activity at a glance</p>
+
+      <div class="greeting-banner">
+        <div>
+          <h2 id="greeting-text">Good afternoon, Student 👋</h2>
+          <p id="greeting-subtext">You have 0 study sessions coming up this week.</p>
+        </div>
+        <button class="white-button" data-view-link="discover-groups" type="button">🔍 Browse groups</button>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-value" id="stat-joined-groups">0</span>
+          <span class="stat-label">Joined groups</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="stat-upcoming-sessions">0</span>
+          <span class="stat-label">Upcoming sessions</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="stat-unread-updates">0</span>
+          <span class="stat-label">Unread updates</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="stat-discussion-posts">0</span>
+          <span class="stat-label">Discussion posts</span>
+        </div>
+      </div>
+
+      <div class="dashboard-lower">
+        <div class="card dashboard-sessions-card">
+          <div class="card-header-row">
+            <h2>Upcoming sessions</h2>
+            <span class="link-text" data-view-link="sessions">View all</span>
+          </div>
+          <div id="dashboard-upcoming-sessions" class="sessions-list">
+            <p class="muted">No upcoming sessions yet.</p>
+          </div>
+        </div>
+
+        <div class="dashboard-side">
+          <div class="card">
+            <h2>Recently joined</h2>
+            <div id="recently-joined-list" class="recently-joined-list">
+              <p class="muted">No groups yet.</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Quick links</h2>
+            <button class="quick-link-row" data-view-link="discover-groups" type="button">
+              <span>🔍 Find a new group</span><span>→</span>
+            </button>
+            <button class="quick-link-row" data-view-link="discussions" type="button">
+              <span>💬 Open discussions</span><span>→</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- DISCOVER GROUPS ---------- -->
+    <section id="view-discover-groups" class="view hidden">
+      <h1>Discover Groups</h1>
+      <p class="page-subtitle">Search by course code, group name, or topic</p>
+
+      <form id="search-form" class="search-bar">
+        <input id="search-input" type="search" placeholder='Search "ITSC 2214", "Calculus", or "Python"'>
+        <button class="main-button" type="submit">🔍 Search groups</button>
+      </form>
+
+      <div class="card-header-row section-spacer">
+        <h2 id="discover-groups-heading">Recommended for you</h2>
+        <span class="muted" id="discover-groups-count"></span>
+      </div>
+
+      <div id="discover-groups-list" class="discover-groups-list">
+        <p class="muted">Loading groups…</p>
+      </div>
+    </section>
+
+    <!-- ---------- MY GROUPS ---------- -->
+    <section id="view-my-groups" class="view hidden">
+      <div class="card-header-row">
+        <div>
+          <h1>My Groups</h1>
+          <p class="page-subtitle">Groups you created and joined</p>
+        </div>
+        <button class="main-button" id="open-create-group-button" type="button">+ Create group</button>
+      </div>
+
+      <h2 class="section-title">Created by you</h2>
+      <div id="created-groups-grid" class="group-grid">
+        <p class="muted">You haven't created any groups yet.</p>
+      </div>
+
+      <h2 class="section-title">Joined groups</h2>
+      <div id="joined-groups-list" class="joined-groups-list">
+        <p class="muted">You haven't joined any groups yet.</p>
+      </div>
+    </section>
+
+    <!-- ---------- SESSIONS ---------- -->
+    <section id="view-sessions" class="view hidden">
+      <div class="card-header-row">
+        <div>
+          <h1>Study Sessions</h1>
+          <p class="page-subtitle">Upcoming and past sessions across your groups</p>
+        </div>
+        <button class="main-button" id="open-create-session-button" type="button">+ Create session</button>
+      </div>
+
+      <h2 class="section-title">Upcoming</h2>
+      <div id="upcoming-sessions-list" class="sessions-list">
+        <p class="muted">No upcoming sessions yet.</p>
+      </div>
+
+      <h2 class="section-title">Past sessions</h2>
+      <div id="past-sessions-list" class="sessions-list">
+        <p class="muted">No past sessions yet.</p>
+      </div>
+    </section>
+
+    <!-- ---------- DISCUSSIONS ---------- -->
+    <section id="view-discussions" class="view hidden">
+      <div id="discussions-picker">
+        <h1>Discussions</h1>
+        <p class="page-subtitle">Choose a group to view its discussion board</p>
+        <div id="discussions-group-list" class="discussions-group-list">
+          <p class="muted">Join a group to start a discussion.</p>
+        </div>
+      </div>
+
+      <div id="discussions-thread-view" class="hidden">
+        <button class="link-text back-link" id="discussions-back-button" type="button">← All discussions</button>
+        <h1 id="discussions-group-title">Group Discussion</h1>
+        <p class="page-subtitle" id="discussions-group-subtitle">—</p>
+
+        <div class="discussions-layout">
+          <div class="card discussions-posts-card">
+            <div class="card-header-row">
+              <h2>Discussion posts</h2>
+              <button class="main-button" id="open-create-post-button" type="button">+ Create post</button>
+            </div>
+            <div id="discussion-posts-list" class="discussion-posts-list">
+              <p class="muted">No discussion posts yet.</p>
+            </div>
+          </div>
+
+          <div class="card discussions-thread-card">
+            <h2>Selected thread</h2>
+            <div id="selected-thread-content">
+              <p class="muted">Select a post to see replies.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- NOTIFICATIONS ---------- -->
+    <section id="view-notifications" class="view hidden">
+      <div class="card-header-row">
+        <div>
+          <h1>Notifications</h1>
+          <p class="page-subtitle">Updates from your groups, sessions, and discussions</p>
+        </div>
+        <button class="link-text" id="mark-all-read-button" type="button">✓ Mark all as read</button>
+      </div>
+
+      <div id="notifications-list" class="notifications-page-list">
+        <p class="muted">No notifications yet.</p>
+      </div>
+    </section>
+
+    <!-- ---------- PROFILE ---------- -->
+    <section id="view-profile" class="view hidden">
+      <h1>Profile</h1>
+      <p class="page-subtitle">Manage your student details and see your groups</p>
+
+      <div class="card profile-top-card">
+        <div class="profile-header">
+          <span class="avatar-circle avatar-large" id="profile-avatar">S</span>
+          <div>
+            <h2 id="profile-name">—</h2>
+            <p class="muted" id="profile-email">—</p>
+            <div class="profile-badges">
+              <span class="badge badge-purple" id="profile-major-badge">—</span>
+              <span class="badge badge-gray" id="profile-year-badge">—</span>
+            </div>
+          </div>
+        </div>
+        <button class="secondary-button" id="open-edit-profile-button" type="button">✎ Edit profile</button>
+      </div>
+
+      <div class="profile-lower">
+        <div class="card">
+          <h2>Profile information</h2>
+          <div class="profile-info-row">
+            <span class="muted">Name</span>
+            <span id="profile-info-name">—</span>
+          </div>
+          <div class="profile-info-row">
+            <span class="muted">Email</span>
+            <span id="profile-info-email">—</span>
+          </div>
+          <div class="profile-info-row">
+            <span class="muted">Major</span>
+            <span id="profile-info-major">—</span>
+          </div>
+          <div class="profile-info-row">
+            <span class="muted">School year</span>
+            <span id="profile-info-year">—</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header-row">
+            <h2>Joined groups</h2>
+            <span class="muted" id="profile-groups-count"></span>
+          </div>
+          <div id="profile-groups-list" class="profile-groups-list">
+            <p class="muted">No groups yet.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ===================== MODALS ===================== -->
+
+<dialog id="create-group-dialog">
+  <button class="close-button" data-close-dialog="create-group-dialog" type="button" aria-label="Close">×</button>
+  <div class="dialog-content">
+    <h2>Create Study Group</h2>
+    <form id="create-group-form">
+      <label for="group-name">Group name</label>
+      <input id="group-name" type="text" placeholder="e.g. Database Study Hub" required>
+
+      <label for="course-code">Course code</label>
+      <input id="course-code" type="text" placeholder="e.g. ITSC 3155" required>
+
+      <label for="group-description">Description</label>
+      <textarea id="group-description" rows="3" placeholder="What will this group study?" required></textarea>
+
+      <label for="max-members">Maximum members</label>
+      <input id="max-members" type="number" min="1" value="10" required>
+
+      <label for="group-status">Status</label>
+      <select id="group-status">
+        <option value="open" selected>Open</option>
+        <option value="full">Full</option>
+      </select>
+
+      <button class="main-button" type="submit">Create group</button>
+      <p id="create-group-message" class="form-message"></p>
+    </form>
+  </div>
+</dialog>
+
+<dialog id="session-dialog">
+  <button class="close-button" data-close-dialog="session-dialog" type="button" aria-label="Close">×</button>
+  <div class="dialog-content">
+    <h2 id="session-dialog-title">Create Session</h2>
+    <form id="session-form">
+      <label for="session-group-select" id="session-group-label">Group</label>
+      <select id="session-group-select" required></select>
+
+      <label for="session-title">Title</label>
+      <input id="session-title" type="text" placeholder="e.g. Midterm review" required>
+
+      <label for="session-location">Location</label>
+      <input id="session-location" type="text" placeholder="e.g. Atkins Library 218">
+
+      <label for="session-meeting-link">Meeting link (optional)</label>
+      <input id="session-meeting-link" type="text" placeholder="e.g. Google Meet URL">
+
+      <label for="session-time">Date &amp; time</label>
+      <input id="session-time" type="datetime-local" required>
+
+      <label for="session-duration">Duration (minutes)</label>
+      <input id="session-duration" type="number" min="1" value="60" required>
+
+      <button class="main-button" type="submit">Save session</button>
+      <p id="session-message" class="form-message"></p>
+    </form>
+  </div>
+</dialog>
+
+<dialog id="create-post-dialog">
+  <button class="close-button" data-close-dialog="create-post-dialog" type="button" aria-label="Close">×</button>
+  <div class="dialog-content">
+    <h2>Create Post</h2>
+    <form id="create-post-form">
+      <label for="post-title">Title</label>
+      <input id="post-title" type="text" placeholder="What's your question?" required>
+
+      <label for="post-content">Content</label>
+      <textarea id="post-content" rows="4" placeholder="Add some detail…" required></textarea>
+
+      <button class="main-button" type="submit">Post</button>
+      <p id="create-post-message" class="form-message"></p>
+    </form>
+  </div>
+</dialog>
+
+<dialog id="edit-profile-dialog">
+  <button class="close-button" data-close-dialog="edit-profile-dialog" type="button" aria-label="Close">×</button>
+  <div class="dialog-content">
+    <h2>Edit Profile</h2>
+    <form id="edit-profile-form">
+      <label for="edit-profile-name">Display name</label>
+      <input id="edit-profile-name" type="text" required>
+
+      <label for="edit-profile-major">Major</label>
+      <input id="edit-profile-major" type="text">
+
+      <label for="edit-profile-year">School year</label>
+      <input id="edit-profile-year" type="text" placeholder="e.g. Senior">
+
+      <button class="main-button" type="submit">Save changes</button>
+      <p id="edit-profile-message" class="form-message"></p>
+    </form>
+    <hr class="dialog-divider">
+    <button class="secondary-button full-width" id="logout-button" type="button">Log out</button>
+  </div>
+</dialog>
+
+<dialog id="session-view-dialog">
+  <button class="close-button" data-close-dialog="session-view-dialog" type="button" aria-label="Close">×</button>
+  <div class="dialog-content" id="session-view-content"></div>
+</dialog>
+
+<div id="notification-toast" class="notification-toast hidden"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

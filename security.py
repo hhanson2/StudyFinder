@@ -1,26 +1,41 @@
-import bcrypt
 
+from datetime import datetime, timedelta, timezone
+
+import bcrypt
+import jwt
+
+from database import settings
+
+JWT_SECRET = settings.jwt_secret
+JWT_ALGORITHM = settings.jwt_algorithm
 
 def hash_password(password: str) -> str:
-    password_bytes = password.encode("utf-8")
-    salt = bcrypt.gensalt()
-
-    hashed_password = bcrypt.hashpw(
-        password_bytes,
-        salt
-    )
-
-    return hashed_password.decode("utf-8")
+    return bcrypt.hashpw(
+        password.encode("utf-8"),
+        bcrypt.gensalt()
+    ).decode("utf-8")
 
 
 def verify_password(
-    plain_password: str,
-    hashed_password: str
+    password: str,
+    password_hash: str
 ) -> bool:
-    plain_password_bytes = plain_password.encode("utf-8")
-    hashed_password_bytes = hashed_password.encode("utf-8")
-
     return bcrypt.checkpw(
-        plain_password_bytes,
-        hashed_password_bytes
+        password.encode("utf-8"),
+        password_hash.encode("utf-8")
+    )
+
+
+def create_access_token(user_id: int) -> str:
+    expiration = datetime.now(timezone.utc) + timedelta(hours=8)
+
+    payload = {
+        "sub": str(user_id),
+        "exp": expiration
+    }
+
+    return jwt.encode(
+        payload,
+        JWT_SECRET,
+        algorithm=JWT_ALGORITHM
     )

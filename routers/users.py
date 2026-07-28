@@ -1,94 +1,81 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import func, or_
-from sqlalchemy.orm import Session
-from schemas import UserCreate, UserResponse
-from database import get_db
-from models import DiscussionPost, StudyGroup, StudyGroupMember, StudySession, User
 from datetime import datetime
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import func, or_, select
+from sqlalchemy.orm import Session
+
+from auth_dependencies import get_current_user
+from database import get_db
+from models import (
+    DiscussionPost,
+    StudyGroup,
+    StudyGroupMember,
+    StudySession,
+    User,
+)
+from schemas import UserResponse, UserUpdate
 
 router = APIRouter()
 
 
-@router.post(
-    "/",
+@router.get(
+    "/me",
     response_model=UserResponse,
-    status_code=status.HTTP_201_CREATED
 )
-def create_user(
-    user_data: UserCreate,
-    db: Session = Depends(get_db)
+def get_current_user_profile(
+    current_user: User = Depends(get_current_user),
 ):
-    existing_user = (
-        db.query(User)
-        .filter(User.email == str(user_data.email))
-        .first()
-    )
+    return current_user
 
-    if existing_user:
+
+@router.put(
+    "/me",
+    response_model=UserResponse,
+)
+def update_current_user_profile(
+    user_data: UserUpdate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    display_name = user_data.display_name.strip()
+
+    if not display_name:
         raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="A user with this email already exists."
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Display name is required.",
         )
 
-    new_user = User(
-        display_name=user_data.display_name,
-        email=str(user_data.email),
-        major=user_data.major,
-        school_year=user_data.school_year
+    current_user.display_name = display_name
+
+    current_user.major = (
+        user_data.major.strip()
+        if user_data.major
+        else None
     )
 
-    db.add(new_user)
+    current_user.school_year = (
+        user_data.school_year.strip()
+        if user_data.school_year
+        else None
+    )
+
     db.commit()
-    db.refresh(new_user)
+    db.refresh(current_user)
 
-    return new_user
-
-
-@router.get("/", response_model=list[UserResponse])
-def get_users(db: Session = Depends(get_db)):
-    return db.query(User).order_by(User.id).all()
+    return current_user
 
 
-@router.get("/{user_id}", response_model=UserResponse)
-def get_user(
-    user_id: int,
-    db: Session = Depends(get_db)
+@router.get("/me/study-groups")
+def get_current_user_study_groups(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
-    user = (
-        db.query(User)
-        .filter(User.id == user_id)
-        .first()
-    )
+    user_id = current_user.id
 
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found."
-        )
-
-    return user
-
-
-@router.get("/{user_id}/study-groups")
-def get_user_study_groups(
-    user_id: int,
-    db: Session = Depends(get_db)
-):
-    user = (
-        db.query(User)
-        .filter(User.id == user_id)
-        .first()
-    )
-
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found."
-        )
-
-    member_group_ids = (
-        db.query(StudyGroupMember.group_id)
-        .filter(StudyGroupMember.user_id == user_id)
+    member_group_ids = select(
+        StudyGroupMember.group_id
+    ).where(
+        StudyGroupMember.user_id == user_id
     )
 
     groups = (
@@ -97,22 +84,34 @@ def get_user_study_groups(
             StudyGroup.group_name,
             StudyGroup.course_code,
             StudyGroup.description,
+            StudyGroup.creator_user_id,
             StudyGroup.status,
             StudyGroup.max_members,
             StudyGroup.created_at,
-            func.count(StudyGroupMember.user_id).label("member_count")
+            func.count(
+                StudyGroupMember.user_id
+            ).label("member_count"),
         )
         .outerjoin(
             StudyGroupMember,
-            StudyGroup.id == StudyGroupMember.group_id
+            StudyGroup.id == StudyGroupMember.group_id,
         )
         .filter(
             or_(
                 StudyGroup.creator_user_id == user_id,
-                StudyGroup.id.in_(member_group_ids)
+                StudyGroup.id.in_(member_group_ids),
             )
         )
-        .group_by(StudyGroup.id)
+        .group_by(
+            StudyGroup.id,
+            StudyGroup.group_name,
+            StudyGroup.course_code,
+            StudyGroup.description,
+            StudyGroup.creator_user_id,
+            StudyGroup.status,
+            StudyGroup.max_members,
+            StudyGroup.created_at,
+        )
         .order_by(StudyGroup.created_at.desc())
         .all()
     )
@@ -123,36 +122,30 @@ def get_user_study_groups(
             "group_name": group.group_name,
             "course_code": group.course_code,
             "description": group.description,
+            "creator_user_id": group.creator_user_id,
             "status": group.status,
             "max_members": group.max_members,
             "member_count": group.member_count,
-            "created_at": group.created_at
+            "created_at": group.created_at,
+            "is_creator": (
+                group.creator_user_id == user_id
+            ),
         }
         for group in groups
     ]
 
 
-
-@router.get("/{user_id}/sessions")
-def get_user_sessions(
-    user_id: int,
-    db: Session = Depends(get_db)
+@router.get("/me/sessions")
+def get_current_user_sessions(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
-    user = (
-        db.query(User)
-        .filter(User.id == user_id)
-        .first()
-    )
+    user_id = current_user.id
 
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found."
-        )
-
-    member_group_ids = (
-        db.query(StudyGroupMember.group_id)
-        .filter(StudyGroupMember.user_id == user_id)
+    member_group_ids = select(
+        StudyGroupMember.group_id
+    ).where(
+        StudyGroupMember.user_id == user_id
     )
 
     sessions = (
@@ -165,15 +158,18 @@ def get_user_sessions(
             StudySession.duration_minutes,
             StudyGroup.id.label("group_id"),
             StudyGroup.group_name,
-            StudyGroup.course_code
+            StudyGroup.course_code,
+            StudyGroup.creator_user_id,
         )
-        .join(StudyGroup, StudySession.group_id == StudyGroup.id)
+        .join(
+            StudyGroup,
+            StudySession.group_id == StudyGroup.id,
+        )
         .filter(
             or_(
                 StudyGroup.creator_user_id == user_id,
-                StudyGroup.id.in_(member_group_ids)
-            ),
-            StudySession.scheduled_at >= datetime.now()
+                StudyGroup.id.in_(member_group_ids),
+            )
         )
         .order_by(StudySession.scheduled_at)
         .all()
@@ -181,86 +177,91 @@ def get_user_sessions(
 
     return [
         {
-            "id": session.id,
-            "title": session.title,
-            "location": session.location,
-            "meeting_link": session.meeting_link,
-            "scheduled_at": session.scheduled_at,
-            "duration_minutes": session.duration_minutes,
-            "group_id": session.group_id,
-            "group_name": session.group_name,
-            "course_code": session.course_code
+            "id": study_session.id,
+            "title": study_session.title,
+            "location": study_session.location,
+            "meeting_link": study_session.meeting_link,
+            "scheduled_at": study_session.scheduled_at,
+            "duration_minutes": study_session.duration_minutes,
+            "group_id": study_session.group_id,
+            "group_name": study_session.group_name,
+            "course_code": study_session.course_code,
+            "can_manage": (
+                study_session.creator_user_id == user_id
+            ),
         }
-        for session in sessions
+        for study_session in sessions
     ]
 
 
-@router.get("/{user_id}/profile")
-def get_user_profile(
-    user_id: int,
-    db: Session = Depends(get_db)
+@router.get("/me/profile")
+def get_current_user_profile_summary(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
-    user = (
-        db.query(User)
-        .filter(User.id == user_id)
-        .first()
-    )
+    user_id = current_user.id
 
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found."
-        )
+    member_group_ids = select(
+        StudyGroupMember.group_id
+    ).where(
+        StudyGroupMember.user_id == user_id
+    )
 
     groups_created = (
         db.query(func.count(StudyGroup.id))
-        .filter(StudyGroup.creator_user_id == user_id)
+        .filter(
+            StudyGroup.creator_user_id == user_id
+        )
         .scalar()
-    )
+    ) or 0
 
     groups_joined = (
-        db.query(func.count(StudyGroupMember.group_id))
-        .filter(StudyGroupMember.user_id == user_id)
+        db.query(
+            func.count(StudyGroupMember.group_id)
+        )
+        .filter(
+            StudyGroupMember.user_id == user_id
+        )
         .scalar()
-    )
-
-    member_group_ids = (
-        db.query(StudyGroupMember.group_id)
-        .filter(StudyGroupMember.user_id == user_id)
-    )
+    ) or 0
 
     upcoming_sessions = (
         db.query(func.count(StudySession.id))
-        .join(StudyGroup, StudySession.group_id == StudyGroup.id)
+        .join(
+            StudyGroup,
+            StudySession.group_id == StudyGroup.id,
+        )
         .filter(
             or_(
                 StudyGroup.creator_user_id == user_id,
-                StudyGroup.id.in_(member_group_ids)
+                StudyGroup.id.in_(member_group_ids),
             ),
-            StudySession.scheduled_at >= datetime.now()
+            StudySession.scheduled_at >= datetime.now(),
         )
         .scalar()
-    )
+    ) or 0
 
     discussion_posts = (
         db.query(func.count(DiscussionPost.id))
-        .filter(DiscussionPost.user_id == user_id)
+        .filter(
+            DiscussionPost.user_id == user_id
+        )
         .scalar()
-    )
+    ) or 0
 
     return {
         "user": {
-            "id": user.id,
-            "display_name": user.display_name,
-            "email": user.email,
-            "major": user.major,
-            "school_year": user.school_year,
-            "created_at": user.created_at
+            "id": current_user.id,
+            "display_name": current_user.display_name,
+            "email": current_user.email,
+            "major": current_user.major,
+            "school_year": current_user.school_year,
+            "created_at": current_user.created_at,
         },
         "stats": {
             "groups_created": groups_created,
             "groups_joined": groups_joined,
             "upcoming_sessions": upcoming_sessions,
-            "discussion_posts": discussion_posts
-        }
+            "discussion_posts": discussion_posts,
+        },
     }

@@ -2,228 +2,1252 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>StudyFinder</title>
 
-    <link rel="stylesheet" href="styles.css">
+    <link
+        rel="stylesheet"
+        href="shared.css?v=final1"
+    >
 </head>
 
 <body>
-    <header class="topbar">
-        <a href="#" class="brand">
-            <span class="brand-mark">SF</span>
-            <span>StudyFinder</span>
-        </a>
 
-        <div id="user-navigation" class="user-navigation hidden">
-            <span id="welcome-user"></span>
-            <button id="logout-button" class="text-button" type="button">
-                Log out
-            </button>
-        </div>
-    </header>
+    <!-- Authentication -->
 
-    <main>
-        <!-- Authentication -->
-        <section id="authentication-view" class="authentication-view">
-            <div class="authentication-panel">
-                <header class="form-header">
-                    <h1 id="authentication-title">Sign in</h1>
-                    <p>Access your study groups and find classmates.</p>
+    <main
+        id="authentication-view"
+        class="authentication-view"
+    >
+        <section class="authentication-card">
+            <header class="authentication-header">
+                <span class="brand-mark">S</span>
+
+                <div>
+                    <h1>StudyFinder</h1>
+                    <p>Find your people. Study better.</p>
+                </div>
+            </header>
+
+            <div id="login-section">
+                <header class="form-heading">
+                    <h2>Welcome back</h2>
+                    <p>Sign in to continue.</p>
                 </header>
 
                 <form id="login-form">
-                    <label for="login-email">Email address</label>
-                    <input
-                        id="login-email"
-                        type="email"
-                        autocomplete="email"
-                        required
-                    >
+                    <div class="form-field">
+                        <label for="login-email">
+                            Email address
+                        </label>
 
-                    <label for="login-password">Password</label>
-                    <input
-                        id="login-password"
-                        type="password"
-                        autocomplete="current-password"
-                        required
-                    >
+                        <input
+                            id="login-email"
+                            type="email"
+                            autocomplete="email"
+                            required
+                        >
+                    </div>
 
-                    <button class="main-button" type="submit">
+                    <div class="form-field">
+                        <label for="login-password">
+                            Password
+                        </label>
+
+                        <input
+                            id="login-password"
+                            type="password"
+                            autocomplete="current-password"
+                            required
+                        >
+                    </div>
+
+                    <button
+                        class="primary-button full-button"
+                        type="submit"
+                    >
                         Sign in
                     </button>
 
-                    <p id="login-message" class="form-message"></p>
+                    <p
+                        id="login-message"
+                        class="form-message"
+                    ></p>
                 </form>
 
-                <form id="register-form" class="hidden">
-                    <label for="register-name">Full name</label>
-                    <input
-                        id="register-name"
-                        type="text"
-                        autocomplete="name"
-                        required
-                    >
+                <p class="authentication-switch">
+                    New to StudyFinder?
 
-                    <label for="register-email">Email address</label>
-                    <input
-                        id="register-email"
-                        type="email"
-                        autocomplete="email"
-                        required
+                    <button
+                        id="show-register-button"
+                        class="text-button"
+                        type="button"
                     >
+                        Create an account
+                    </button>
+                </p>
+            </div>
 
-                    <label for="register-password">Password</label>
-                    <input
-                        id="register-password"
-                        type="password"
-                        autocomplete="new-password"
-                        minlength="6"
-                        required
+            <div
+                id="register-section"
+                class="hidden"
+            >
+                <header class="form-heading">
+                    <h2>Create an account</h2>
+                    <p>Start finding study groups.</p>
+                </header>
+
+                <form id="register-form">
+                    <div class="form-field">
+                        <label for="register-name">
+                            Full name
+                        </label>
+
+                        <input
+                            id="register-name"
+                            type="text"
+                            autocomplete="name"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-field">
+                        <label for="register-email">
+                            Email address
+                        </label>
+
+                        <input
+                            id="register-email"
+                            type="email"
+                            autocomplete="email"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-field">
+                        <label for="register-password">
+                            Password
+                        </label>
+
+                        <input
+                            id="register-password"
+                            type="password"
+                            minlength="6"
+                            autocomplete="new-password"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-field">
+                            <label for="register-major">
+                                Major
+                            </label>
+
+                            <input
+                                id="register-major"
+                                type="text"
+                            >
+                        </div>
+
+                        <div class="form-field">
+                            <label for="register-school-year">
+                                School year
+                            </label>
+
+                            <select id="register-school-year">
+                                <option value="">
+                                    Select year
+                                </option>
+
+                                <option value="Freshman">
+                                    Freshman
+                                </option>
+
+                                <option value="Sophomore">
+                                    Sophomore
+                                </option>
+
+                                <option value="Junior">
+                                    Junior
+                                </option>
+
+                                <option value="Senior">
+                                    Senior
+                                </option>
+
+                                <option value="Graduate">
+                                    Graduate
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button
+                        class="primary-button full-button"
+                        type="submit"
                     >
-
-                    <button class="main-button" type="submit">
                         Create account
                     </button>
 
-                    <p id="register-message" class="form-message"></p>
+                    <p
+                        id="register-message"
+                        class="form-message"
+                    ></p>
                 </form>
 
-                <div class="authentication-switch">
-                    <span id="switch-text">New to StudyFinder?</span>
-
-                    <button id="authentication-switch-button" type="button">
-                        Create an account
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Application -->
-        <section id="application-view" class="application-view hidden">
-            <aside class="sidebar">
-                <p class="sidebar-label">Workspace</p>
-
-                <nav>
-                    <button class="navigation-item active" type="button">
-                        Find groups
-                    </button>
+                <p class="authentication-switch">
+                    Already have an account?
 
                     <button
-                        id="sidebar-create-button"
-                        class="navigation-item"
+                        id="show-login-button"
+                        class="text-button"
                         type="button"
                     >
-                        Create a group
+                        Sign in
                     </button>
-                </nav>
-            </aside>
-
-            <div class="workspace">
-                <header class="page-header">
-                    <div>
-                        <p class="section-label">Study groups</p>
-                        <h1>Find study groups by name or course code</h1>
-                    </div>
-
-                    <button id="open-create-group" class="main-button" type="button">
-                        New group
-                    </button>
-                </header>
-
-                <form id="search-form" class="search-bar">
-                    <label for="search-input" class="visually-hidden">
-                        Course name or course code
-                    </label>
-
-                    <input
-                        id="search-input"
-                        type="search"
-                        placeholder="Search by course name or code"
-                        required
-                    >
-
-                    <button type="submit">Search</button>
-                </form>
-
-                <p id="search-message" class="form-message"></p>
-
-                <div class="results-heading">
-                    <span>Available groups</span>
-                    <span id="result-count">0 groups</span>
-                </div>
-
-                <div id="group-results" class="group-results">
-                    <div class="empty-state">
-                        <p>Search for a course to see available study groups.</p>
-                    </div>
-                </div>
+                </p>
             </div>
         </section>
     </main>
 
-    <!-- Create group window -->
-    <dialog id="create-group-dialog">
-        <div class="dialog-header">
-            <div>
-                <p class="section-label">StudyFinder</p>
-                <h2>Create a study group</h2>
+    <!-- Authenticated application -->
+
+    <div
+        id="application-view"
+        class="app-layout hidden"
+    >
+        <aside class="sidebar">
+            <button
+                class="sidebar-brand"
+                data-view="dashboard"
+                type="button"
+            >
+                <span class="brand-mark">S</span>
+                <span>StudyFinder</span>
+            </button>
+
+            <nav class="sidebar-navigation">
+                <button
+                    class="navigation-link active"
+                    data-view="dashboard"
+                    type="button"
+                >
+                    <span class="navigation-icon">⌂</span>
+                    <span>Dashboard</span>
+                </button>
+
+                <button
+                    class="navigation-link"
+                    data-view="discover"
+                    type="button"
+                >
+                    <span class="navigation-icon">⌕</span>
+                    <span>Discover Groups</span>
+                </button>
+
+                <button
+                    class="navigation-link"
+                    data-view="groups"
+                    type="button"
+                >
+                    <span class="navigation-icon">♙</span>
+                    <span>My Groups</span>
+                </button>
+
+                <button
+                    class="navigation-link"
+                    data-view="sessions"
+                    type="button"
+                >
+                    <span class="navigation-icon">□</span>
+                    <span>Sessions</span>
+                </button>
+
+                <button
+                    class="navigation-link"
+                    data-view="profile"
+                    type="button"
+                >
+                    <span class="navigation-icon">○</span>
+                    <span>Profile</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button
+                    id="logout-button"
+                    class="logout-button"
+                    type="button"
+                >
+                    <span class="navigation-icon">↪</span>
+                    <span>Log out</span>
+                </button>
+            </div>
+        </aside>
+
+        <main class="page-content">
+            <header class="page-header">
+                <div class="page-title">
+                    <h1 id="page-title">Dashboard</h1>
+
+                    <p id="page-subtitle">
+                        Your study activity at a glance
+                    </p>
+                </div>
+
+                <button
+                    class="header-user"
+                    data-view="profile"
+                    type="button"
+                >
+                    <span
+                        id="header-user-initials"
+                        class="user-avatar"
+                    >
+                        --
+                    </span>
+
+                    <span class="user-information">
+                        <strong id="header-user-name">
+                            Loading...
+                        </strong>
+
+                        <span id="header-user-role">
+                            Student
+                        </span>
+                    </span>
+                </button>
+            </header>
+
+            <!-- Dashboard view -->
+
+            <section
+                id="dashboard-view"
+                class="view-section"
+            >
+                <section class="welcome-banner">
+                    <div>
+                        <h2>
+                            Good
+                            <span id="day-period">day</span>,
+                            <span id="greeting-name">
+                                Student
+                            </span>
+                        </h2>
+
+                        <p id="dashboard-session-message">
+                            Loading your upcoming sessions...
+                        </p>
+                    </div>
+
+                    <button
+                        class="banner-button"
+                        data-view="discover"
+                        type="button"
+                    >
+                        Browse groups
+                    </button>
+                </section>
+
+                <section class="summary-grid">
+                    <article class="summary-card">
+                        <strong
+                            id="dashboard-joined-count"
+                            class="summary-number"
+                        >
+                            0
+                        </strong>
+
+                        <p class="summary-label">
+                            Joined groups
+                        </p>
+                    </article>
+
+                    <article class="summary-card">
+                        <strong
+                            id="dashboard-created-count"
+                            class="summary-number"
+                        >
+                            0
+                        </strong>
+
+                        <p class="summary-label">
+                            Created groups
+                        </p>
+                    </article>
+
+                    <article class="summary-card">
+                        <strong
+                            id="dashboard-session-count"
+                            class="summary-number"
+                        >
+                            0
+                        </strong>
+
+                        <p class="summary-label">
+                            Upcoming sessions
+                        </p>
+                    </article>
+
+                    <article class="summary-card">
+                        <strong
+                            id="dashboard-post-count"
+                            class="summary-number"
+                        >
+                            0
+                        </strong>
+
+                        <p class="summary-label">
+                            Discussion posts
+                        </p>
+                    </article>
+                </section>
+
+                <section class="content-grid">
+                    <article class="panel">
+                        <header class="panel-header">
+                            <h2>Upcoming sessions</h2>
+
+                            <button
+                                class="text-button"
+                                data-view="sessions"
+                                type="button"
+                            >
+                                View all
+                            </button>
+                        </header>
+
+                        <div
+                            id="dashboard-sessions-list"
+                            class="item-list"
+                        >
+                            <div class="empty-state">
+                                Loading sessions...
+                            </div>
+                        </div>
+                    </article>
+
+                    <aside class="side-column"  >
+
+                        <section class="panel">
+                            <header class="panel-header">
+                                <div>
+                                    <h2>Invitations</h2>
+                                    <p>Group and session invites</p>
+                                </div>
+
+                                <span id="pending-invitation-count" class="badge">
+                                    0 pending
+                                </span>
+                            </header>
+
+                            <div id="invitations-list" class="item-list">
+                                <div class="empty-state">
+                                    <p>You have no pending invitations.</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <article class="panel">
+                            <header class="panel-header">
+                                <h3>My groups</h3>
+
+                                <button
+                                    class="text-button"
+                                    data-view="groups"
+                                    type="button"
+                                >
+                                    View all
+                                </button>
+                            </header>
+
+                            <div
+                                id="dashboard-groups-list"
+                                class="item-list"
+                            >
+                                <div class="empty-state">
+                                    Loading groups...
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="panel">
+                            <header class="panel-header">
+                                <h3>Quick links</h3>
+                            </header>
+
+                            <div class="item-list">
+                                <button
+                                    class="quick-link"
+                                    data-view="discover"
+                                    type="button"
+                                >
+                                    <span>Find a group</span>
+                                    <span>→</span>
+                                </button>
+
+                                <button
+                                    id="quick-create-group"
+                                    class="quick-link"
+                                    type="button"
+                                >
+                                    <span>Create a group</span>
+                                    <span>→</span>
+                                </button>
+
+                                <button
+                                    class="quick-link"
+                                    data-view="sessions"
+                                    type="button"
+                                >
+                                    <span>View sessions</span>
+                                    <span>→</span>
+                                </button>
+                            </div>
+                        </article>
+                    </aside>
+                </section>
+            </section>
+
+            <!-- Discover groups view -->
+
+            <section
+                id="discover-view"
+                class="view-section hidden"
+            >
+                <div class="view-toolbar">
+                    <form
+                        id="group-search-form"
+                        class="search-row"
+                    >
+                        <input
+                            id="group-search-input"
+                            type="search"
+                            placeholder="Search by course code or group name"
+                            aria-label="Search groups"
+                        >
+
+                        <button
+                            class="secondary-button"
+                            type="submit"
+                        >
+                            Search
+                        </button>
+                    </form>
+
+                    <button
+                        class="primary-button open-group-form"
+                        type="button"
+                    >
+                        Create group
+                    </button>
+                </div>
+
+                <p
+                    id="group-search-message"
+                    class="form-message"
+                ></p>
+
+                <div
+                    id="discover-groups-list"
+                    class="group-card-grid"
+                >
+                    <div class="empty-state">
+                        Loading study groups...
+                    </div>
+                </div>
+            </section>
+
+            <!-- My groups view -->
+
+            <section
+                id="groups-view"
+                class="view-section hidden"
+            >
+                <div class="view-toolbar">
+                    <div class="filter-buttons">
+                        <button
+                            class="filter-button active"
+                            data-group-filter="all"
+                            type="button"
+                        >
+                            All groups
+                        </button>
+
+                        <button
+                            class="filter-button"
+                            data-group-filter="created"
+                            type="button"
+                        >
+                            Created by me
+                        </button>
+
+                        <button
+                            class="filter-button"
+                            data-group-filter="joined"
+                            type="button"
+                        >
+                            Joined
+                        </button>
+                    </div>
+
+                    <button
+                        class="primary-button open-group-form"
+                        type="button"
+                    >
+                        Create group
+                    </button>
+                </div>
+
+                <div
+                    id="my-groups-list"
+                    class="group-card-grid"
+                >
+                    <div class="empty-state">
+                        Loading your groups...
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sessions view -->
+
+            <section
+                id="sessions-view"
+                class="view-section hidden"
+            >
+                <div class="view-toolbar">
+                    <div class="filter-buttons">
+                        <button
+                            class="filter-button active"
+                            data-session-filter="upcoming"
+                            type="button"
+                        >
+                            Upcoming
+                        </button>
+
+                        <button
+                            class="filter-button"
+                            data-session-filter="past"
+                            type="button"
+                        >
+                            Past
+                        </button>
+                    </div>
+
+                    <button
+                        id="open-session-form"
+                        class="primary-button"
+                        type="button"
+                    >
+                        Schedule session
+                    </button>
+                </div>
+
+                <div
+                    id="sessions-list"
+                    class="item-list"
+                >
+                    <div class="empty-state">
+                        Loading study sessions...
+                    </div>
+                </div>
+            </section>
+
+            <!-- Profile view -->
+
+            <section
+                id="profile-view"
+                class="view-section hidden"
+            >
+                <section class="profile-layout">
+                    <aside class="panel profile-summary">
+                        <span
+                            id="profile-initials"
+                            class="profile-avatar"
+                        >
+                            --
+                        </span>
+
+                        <h2 id="profile-name">
+                            Loading...
+                        </h2>
+
+                        <p id="profile-email"></p>
+                        <p id="profile-major"></p>
+                        <p id="profile-school-year"></p>
+
+                        <div class="profile-stat-grid">
+                            <div>
+                                <strong id="profile-created-count">
+                                    0
+                                </strong>
+
+                                <span>Created</span>
+                            </div>
+
+                            <div>
+                                <strong id="profile-joined-count">
+                                    0
+                                </strong>
+
+                                <span>Joined</span>
+                            </div>
+
+                            <div>
+                                <strong id="profile-session-count">
+                                    0
+                                </strong>
+
+                                <span>Sessions</span>
+                            </div>
+
+                            <div>
+                                <strong id="profile-post-count">
+                                    0
+                                </strong>
+
+                                <span>Posts</span>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <article class="panel">
+                        <header class="panel-header">
+                            <div>
+                                <h2>Profile details</h2>
+                                <p>
+                                    Update your student information.
+                                </p>
+                            </div>
+                        </header>
+
+                        <form id="profile-form">
+                            <div class="form-grid">
+                                <div class="form-field full-width">
+                                    <label for="profile-display-name">
+                                        Display name
+                                    </label>
+
+                                    <input
+                                        id="profile-display-name"
+                                        type="text"
+                                        required
+                                    >
+                                </div>
+
+                                <div class="form-field full-width">
+                                    <label for="profile-email-input">
+                                        Email address
+                                    </label>
+
+                                    <input
+                                        id="profile-email-input"
+                                        type="email"
+                                        disabled
+                                    >
+                                </div>
+
+                                <div class="form-field">
+                                    <label for="profile-major-input">
+                                        Major
+                                    </label>
+
+                                    <input
+                                        id="profile-major-input"
+                                        type="text"
+                                    >
+                                </div>
+
+                                <div class="form-field">
+                                    <label for="profile-year-input">
+                                        School year
+                                    </label>
+
+                                    <select id="profile-year-input">
+                                        <option value="">
+                                            Select year
+                                        </option>
+
+                                        <option value="Freshman">
+                                            Freshman
+                                        </option>
+
+                                        <option value="Sophomore">
+                                            Sophomore
+                                        </option>
+
+                                        <option value="Junior">
+                                            Junior
+                                        </option>
+
+                                        <option value="Senior">
+                                            Senior
+                                        </option>
+
+                                        <option value="Graduate">
+                                            Graduate
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button
+                                    class="primary-button"
+                                    type="submit"
+                                >
+                                    Save changes
+                                </button>
+                            </div>
+
+                            <p
+                                id="profile-message"
+                                class="form-message"
+                            ></p>
+                        </form>
+                    </article>
+                </section>
+            </section>
+        </main>
+    </div>
+
+    <!-- Create or edit group dialog -->
+
+    <dialog id="group-form-dialog">
+        <div class="dialog-content">
+            <header class="dialog-header">
+                <div>
+                    <h2 id="group-form-title">
+                        Create a study group
+                    </h2>
+
+                    <p>
+                        Enter the study group information.
+                    </p>
+                </div>
+
+                <button
+                    class="close-button"
+                    data-close-dialog="group-form-dialog"
+                    type="button"
+                >
+                    ×
+                </button>
+            </header>
+
+            <form id="group-form">
+                <input
+                    id="editing-group-id"
+                    type="hidden"
+                >
+
+                <div class="form-field">
+                    <label for="group-name-input">
+                        Group name
+                    </label>
+
+                    <input
+                        id="group-name-input"
+                        type="text"
+                        required
+                    >
+                </div>
+
+                <div class="form-field">
+                    <label for="course-code-input">
+                        Course code
+                    </label>
+
+                    <input
+                        id="course-code-input"
+                        type="text"
+                        placeholder="ITSC 3155"
+                        required
+                    >
+                </div>
+
+                <div class="form-field">
+                    <label for="group-description-input">
+                        Description
+                    </label>
+
+                    <textarea
+                        id="group-description-input"
+                        rows="4"
+                    ></textarea>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label for="group-capacity-input">
+                            Maximum members
+                        </label>
+
+                        <input
+                            id="group-capacity-input"
+                            type="number"
+                            min="1"
+                            value="10"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-field">
+                        <label for="group-status-input">
+                            Status
+                        </label>
+
+                        <select id="group-status-input">
+                            <option value="open">
+                                Open
+                            </option>
+
+                            <option value="closed">
+                                Closed
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button
+                        class="secondary-button"
+                        data-close-dialog="group-form-dialog"
+                        type="button"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        class="primary-button"
+                        type="submit"
+                    >
+                        Save group
+                    </button>
+                </div>
+
+                <p
+                    id="group-form-message"
+                    class="form-message"
+                ></p>
+            </form>
+        </div>
+    </dialog>
+
+    <!-- Group details dialog -->
+
+    <dialog
+        id="group-details-dialog"
+        class="large-dialog"
+    >
+        <div class="dialog-content">
+            <header class="dialog-header">
+                <div>
+                    <p
+                        id="detail-course-code"
+                        class="section-label"
+                    ></p>
+
+                    <h2 id="detail-group-name">
+                        Study group
+                    </h2>
+                </div>
+
+                <button
+                    class="close-button"
+                    data-close-dialog="group-details-dialog"
+                    type="button"
+                >
+                    ×
+                </button>
+            </header>
+
+            <div
+                id="group-detail-actions"
+                class="dialog-action-row"
+            ></div>
+
+            <div class="detail-tabs">
+                <button
+                    class="detail-tab active"
+                    data-detail-tab="overview"
+                    type="button"
+                >
+                    Overview
+                </button>
+
+                <button
+                    class="detail-tab"
+                    data-detail-tab="members"
+                    type="button"
+                >
+                    Members
+                </button>
+
+                <button
+                    class="detail-tab"
+                    data-detail-tab="sessions"
+                    type="button"
+                >
+                    Sessions
+                </button>
+
+                <button
+                    class="detail-tab"
+                    data-detail-tab="discussion"
+                    type="button"
+                >
+                    Discussion
+                </button>
             </div>
 
-            <button
-                id="close-create-group"
-                class="close-button"
-                type="button"
-                aria-label="Close"
-            >
-                ×
-            </button>
+            <section
+                id="detail-overview-panel"
+                class="detail-panel"
+            ></section>
+
+            <section
+                id="detail-members-panel"
+                class="detail-panel hidden"
+            ></section>
+
+            <section
+                id="detail-sessions-panel"
+                class="detail-panel hidden"
+            ></section>
+
+            <section
+                id="detail-discussion-panel"
+                class="detail-panel hidden"
+            ></section>
         </div>
-
-        <form id="create-group-form">
-            <label for="group-name">Group name</label>
-            <input id="group-name" type="text" required>
-
-            <label for="course-code">Course code</label>
-            <input
-                id="course-code"
-                type="text"
-                placeholder="ITSC 3155"
-                required
-            >
-
-            <label for="group-description">Description</label>
-            <textarea
-                id="group-description"
-                rows="5"
-                required
-            ></textarea>
-
-            <button class="main-button" type="submit">
-                Create group
-            </button>
-
-            <p id="create-group-message" class="form-message"></p>
-        </form>
     </dialog>
 
-    <!-- Group details window -->
-    <dialog id="group-dialog">
-        <button
-            id="close-group-dialog"
-            class="close-button"
-            type="button"
-            aria-label="Close"
-        >
-            ×
-        </button>
+    <!-- Create or edit session dialog -->
 
-        <div id="group-details"></div>
+    <dialog id="session-form-dialog">
+        <div class="dialog-content">
+            <header class="dialog-header">
+                <div>
+                    <h2 id="session-form-title">
+                        Schedule a study session
+                    </h2>
+
+                    <p>
+                        Add a session to one of your groups.
+                    </p>
+                </div>
+
+                <button
+                    class="close-button"
+                    data-close-dialog="session-form-dialog"
+                    type="button"
+                >
+                    ×
+                </button>
+            </header>
+
+            <form id="session-form">
+                <input
+                    id="editing-session-id"
+                    type="hidden"
+                >
+
+                <div class="form-field">
+                    <label for="session-group-input">
+                        Study group
+                    </label>
+
+                    <select
+                        id="session-group-input"
+                        required
+                    ></select>
+                </div>
+
+                <div class="form-field">
+                    <label for="session-title-input">
+                        Session title
+                    </label>
+
+                    <input
+                        id="session-title-input"
+                        type="text"
+                        required
+                    >
+                </div>
+
+                <div class="form-field">
+                    <label for="session-date-input">
+                        Date and time
+                    </label>
+
+                    <input
+                        id="session-date-input"
+                        type="datetime-local"
+                        required
+                    >
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label for="session-duration-input">
+                            Duration in minutes
+                        </label>
+
+                        <input
+                            id="session-duration-input"
+                            type="number"
+                            min="1"
+                            value="60"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-field">
+                        <label for="session-location-input">
+                            Location
+                        </label>
+
+                        <input
+                            id="session-location-input"
+                            type="text"
+                        >
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label for="session-link-input">
+                        Meeting link
+                    </label>
+
+                    <input
+                        id="session-link-input"
+                        type="url"
+                        placeholder="https://"
+                    >
+                </div>
+
+                <div class="form-actions">
+                    <button
+                        class="secondary-button"
+                        data-close-dialog="session-form-dialog"
+                        type="button"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        class="primary-button"
+                        type="submit"
+                    >
+                        Save session
+                    </button>
+                </div>
+
+                <p
+                    id="session-form-message"
+                    class="form-message"
+                ></p>
+            </form>
+        </div>
     </dialog>
 
-    <div id="notification" class="notification hidden"></div>
+    <!-- Create or edit discussion post -->
 
-    <script src="app.js"></script>
+    <dialog id="post-form-dialog">
+        <div class="dialog-content">
+            <header class="dialog-header">
+                <div>
+                    <h2 id="post-form-title">
+                        Create a discussion post
+                    </h2>
+
+                    <p>Share something with your group.</p>
+                </div>
+
+                <button
+                    class="close-button"
+                    data-close-dialog="post-form-dialog"
+                    type="button"
+                >
+                    ×
+                </button>
+            </header>
+
+            <form id="post-form">
+                <input
+                    id="post-group-id"
+                    type="hidden"
+                >
+
+                <input
+                    id="editing-post-id"
+                    type="hidden"
+                >
+
+                <div class="form-field">
+                    <label for="post-title-input">
+                        Post title
+                    </label>
+
+                    <input
+                        id="post-title-input"
+                        type="text"
+                        required
+                    >
+                </div>
+
+                <div class="form-field">
+                    <label for="post-content-input">
+                        Message
+                    </label>
+
+                    <textarea
+                        id="post-content-input"
+                        rows="6"
+                        required
+                    ></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button
+                        class="secondary-button"
+                        data-close-dialog="post-form-dialog"
+                        type="button"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        class="primary-button"
+                        type="submit"
+                    >
+                        Save post
+                    </button>
+                </div>
+
+                <p
+                    id="post-form-message"
+                    class="form-message"
+                ></p>
+            </form>
+        </div>
+    </dialog>
+
+    <!-- Toast message -->
+
+    <div
+        id="toast"
+        class="toast hidden"
+        role="status"
+    ></div>
+
+    <script src="app.js?v=final6"></script>
 </body>
 </html>

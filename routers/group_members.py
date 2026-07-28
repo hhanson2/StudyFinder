@@ -1,21 +1,34 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from datetime import datetime
+from fastapi import (
+    APIRouter,
+    Depends,
+    HTTPException,
+    status,
+)
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
+from auth_dependencies import get_current_user
 from database import get_db
-from models import StudyGroup, StudyGroupMember, User
+from models import (
+    Invitation,
+    StudyGroup,
+    StudyGroupMember,
+    User
+
+)
 from schemas import StudyGroupMemberResponse
 
 router = APIRouter()
 
 
 @router.post(
-    "/{group_id}/members/{user_id}",
+    "/{group_id}/members/me",
     status_code=status.HTTP_201_CREATED
 )
 def join_study_group(
     group_id: int,
-    user_id: int,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     group = (
@@ -30,23 +43,11 @@ def join_study_group(
             detail="Study group not found."
         )
 
-    user = (
-        db.query(User)
-        .filter(User.id == user_id)
-        .first()
-    )
-
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found."
-        )
-
     existing_member = (
         db.query(StudyGroupMember)
         .filter(
             StudyGroupMember.group_id == group_id,
-            StudyGroupMember.user_id == user_id
+            StudyGroupMember.user_id == current_user.id
         )
         .first()
     )
@@ -54,13 +55,36 @@ def join_study_group(
     if existing_member:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail="User is already a member of this group."
+            detail="You are already a member of this group."
+        )
+
+    is_creator = (
+        group.creator_user_id == current_user.id
+    )
+
+    pending_invitation = (
+        db.query(Invitation)
+        .filter(
+            Invitation.invitee_user_id == current_user.id,
+            Invitation.group_id == group_id,
+            Invitation.invitation_type == "group",
+            Invitation.status == "pending"
+        )
+        .first()
+    )
+
+    if not is_creator and not pending_invitation:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You need an invitation to join this group."
         )
 
     member_count = (
-        db.query(func.count(StudyGroupMember.user_id))
-        .filter(StudyGroupMember.group_id == group_id)
-        .scalar()
+        db.query(StudyGroupMember)
+        .filter(
+            StudyGroupMember.group_id == group_id
+        )
+        .count()
     )
 
     if member_count >= group.max_members:
@@ -71,17 +95,22 @@ def join_study_group(
 
     new_member = StudyGroupMember(
         group_id=group_id,
-        user_id=user_id
+        user_id=current_user.id
     )
 
     db.add(new_member)
+
+    if pending_invitation:
+        pending_invitation.status = "accepted"
+        pending_invitation.responded_at = datetime.now()
+
     db.commit()
     db.refresh(new_member)
 
     return {
         "group_id": group_id,
-        "user_id": user_id,
-        "message": "User joined the study group."
+        "user_id": current_user.id,
+        "message": "You joined the study group."
     }
 
 
@@ -112,8 +141,13 @@ def get_group_members(
             User.email,
             StudyGroupMember.joined_at
         )
-        .join(StudyGroupMember, User.id == StudyGroupMember.user_id)
-        .filter(StudyGroupMember.group_id == group_id)
+        .join(
+            StudyGroupMember,
+            User.id == StudyGroupMember.user_id
+        )
+        .filter(
+            StudyGroupMember.group_id == group_id
+        )
         .order_by(StudyGroupMember.joined_at)
         .all()
     )
@@ -122,30 +156,51 @@ def get_group_members(
 
 
 @router.delete(
-    "/{group_id}/members/{user_id}",
-    status_code=status.HTTP_204_NO_CONTENT
+    "/{group_id}/members/me",
+    status_code=status.HTTP_204_NO_CONTENT,
 )
 def leave_study_group(
     group_id: int,
-    user_id: int,
-    db: Session = Depends(get_db)
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
-    member = (
+    group = (
+        db.query(StudyGroup)
+        .filter(StudyGroup.id == group_id)
+        .first()
+    )
+
+    if not group:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Study group not found.",
+        )
+
+    if group.creator_user_id == current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=(
+                "The group creator cannot leave the group. "
+                "Delete the group instead."
+            ),
+        )
+
+    membership = (
         db.query(StudyGroupMember)
         .filter(
             StudyGroupMember.group_id == group_id,
-            StudyGroupMember.user_id == user_id
+            StudyGroupMember.user_id == current_user.id,
         )
         .first()
     )
 
-    if not member:
+    if not membership:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="User is not a member of this group."
+            detail="You are not a member of this group.",
         )
 
-    db.delete(member)
+    db.delete(membership)
     db.commit()
 
     return None

@@ -229,3 +229,91 @@ class DiscussionPost(Base):
         nullable=False,
         server_default=func.now()
     )
+
+
+class DiscussionReply(Base):
+    __tablename__ = "discussion_replies"
+
+    id: Mapped[int] = mapped_column(
+        Integer,
+        primary_key=True,
+        autoincrement=True
+    )
+
+    post_id: Mapped[int] = mapped_column(
+        ForeignKey(
+            "discussion_posts.id",
+            ondelete="CASCADE"
+        ),
+        nullable=False
+    )
+
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey(
+            "users.id",
+            ondelete="CASCADE"
+        ),
+        nullable=False
+    )
+
+    content: Mapped[str] = mapped_column(
+        Text,
+        nullable=False
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=False,
+        server_default=func.now()
+    )
+
+class Invitation(Base):
+    __tablename__ = "invitations"
+
+    id: Mapped[int] = mapped_column(
+        Integer,
+        primary_key=True,
+        autoincrement=True
+    )
+
+    inviter_user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False
+    )
+
+    invitee_user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False
+    )
+
+    invitation_type: Mapped[str] = mapped_column(
+        String(20),
+        nullable=False
+    )
+
+    group_id: Mapped[int | None] = mapped_column(
+        ForeignKey("study_groups.id", ondelete="CASCADE"),
+        nullable=True
+    )
+
+    session_id: Mapped[int | None] = mapped_column(
+        ForeignKey("study_sessions.id", ondelete="CASCADE"),
+        nullable=True
+    )
+
+    status: Mapped[str] = mapped_column(
+        String(20),
+        nullable=False,
+        default="pending"
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=False,
+        server_default=func.now()
+    )
+
+    responded_at: Mapped[datetime | None] = mapped_column(
+        DateTime,
+        nullable=True
+    )

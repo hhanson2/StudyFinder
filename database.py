@@ -8,11 +8,14 @@ from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 class Settings(BaseSettings):
     database_url: str | None = None
 
-    db_host: str | None = None
+    db_host: str
     db_port: int = 3306
-    db_user: str | None = None
-    db_password: str | None = None
-    db_name: str | None = None
+    db_user: str
+    db_password: str
+    db_name: str
+
+    jwt_secret: str
+    jwt_algorithm: str = "HS256"
 
     model_config = SettingsConfigDict(
         env_file=".env",
